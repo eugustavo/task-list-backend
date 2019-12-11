@@ -59,11 +59,13 @@ module.exports = {
 
     async destroy(req, res) {
         const { task_id, user_id } = req.headers;
-        const aux = await Task.findById({ _id:task_id });
-
+        
         if (!task_id || !user_id) {
             return res.status(404).json({ message: 'Usuário não está logado ou Tarefa não existe!' });
         }
+        
+        const aux = await Task.findById({ _id:task_id });
+        
         if (aux.user.toString() !== user_id.toString()) {
             return res.status(400).json({ message: 'Usuário não é proprietario desta tarefa!' });
         }
