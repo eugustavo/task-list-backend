@@ -21,7 +21,7 @@ module.exports = {
     },
 
     async update(req, res){
-        const { id } = req.query;
+        const { id } = req.headers;
         const { email, password } = req.body;
 
         if( await User.findOne({ email: email })){
@@ -44,7 +44,7 @@ module.exports = {
     },
 
     async destroy(req, res){
-        const { id } = req.query;
+        const { id } = req.headers;
 
         await User.findByIdAndDelete({ _id:id });
         return res.status(200).json({ message: 'Usuário deletado!' });
