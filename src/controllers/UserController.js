@@ -24,20 +24,20 @@ module.exports = {
         const { user_id } = req.headers;
         const { email, password } = req.body;
 
-        if( await User.findOne({ email: email })){
-            return res.json({ message: 'E-mail já cadastrado!'})
+        if(!user_id){
+            return res.status(404).json({ message: 'Usuário não existe ou não está logado!'});
         }
 
-        if(!password){
-            await User.findByIdAndUpdate({ _id:user_id }, {
-                email,
-            });
-            return res.status(200).json({ message: 'E-mail alterado com sucesso!'});
+        if(await User.findOne({ email:email })){
+            return res.status(400).json({ message: 'Este e-mail já está cadastrado!'});
         }
+
         if(!email){
-            await User.findByIdAndUpdate({ _id:user_id }, {
-                password,
-            });
+            await User.findByIdAndUpdate({ _id:user_id }, { password });
+            return res.status(200).json({ message: 'Senha alterada com sucesso!'});
+        }
+        if(!password){
+            await User.findByIdAndUpdate({ _id:user_id }, { email });
             return res.status(200).json({ message: 'E-mail alterado com sucesso!'});
         }
 
@@ -45,7 +45,6 @@ module.exports = {
             email,
             password
         });
-
         return res.status(200).json({ message: 'Usuário alterado com sucesso!'});
     },
 
