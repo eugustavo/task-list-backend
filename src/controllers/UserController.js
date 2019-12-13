@@ -20,16 +20,28 @@ module.exports = {
         return res.status(200).json(users);
     },
 
+    async index(req, res){
+        const { email, password } = req.body;
+        if(!email || !password){
+            return res.json({ message: 'E-mail ou senha não informados'});
+        }
+        if(!await User.findOne({ email:email, password:password})){
+            return res.json({ message: 'Usuário ou senha incorretos'});
+        }
+        const response = await User.findOne({ email:email, password:password });
+        return res.status(200).json(response);
+    },
+
     async update(req, res){
         const { user_id } = req.headers;
         const { email, password } = req.body;
 
         if(!user_id){
-            return res.status(404).json({ message: 'Usuário não existe ou não está logado!'});
+            return res.json({ message: 'Usuário não existe ou não está logado!'});
         }
 
         if(await User.findOne({ email:email })){
-            return res.status(400).json({ message: 'Este e-mail já está cadastrado!'});
+            return res.json({ message: 'Este e-mail já está cadastrado!'});
         }
 
         if(!email){

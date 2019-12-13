@@ -6,6 +6,7 @@ const TaskController = require('./controllers/TaskController');
 
 //User Routes
 routes.get('/users', UserController.show);
+routes.post('/userfind', UserController.index);
 routes.post('/user', UserController.store);
 routes.put('/user', UserController.update);
 routes.delete('/user', UserController.destroy);

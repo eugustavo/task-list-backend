@@ -6,7 +6,7 @@ module.exports = {
         const { name, description } = req.body;
 
         if (!user_id) {
-            return res.status(404).json({ message: 'Usuário não logado ou não existe!' });
+            return res.json({ message: 'Usuário não logado ou não existe!' });
         }
         const response = await Task.create({
             name,
@@ -20,9 +20,9 @@ module.exports = {
     async index(req, res) {
         const { user_id } = req.headers;
         if (!user_id) {
-            return res.status(404).json({ message: 'Usuário não logado ou não existe!' });
+            return res.json({ message: 'Usuário não logado ou não existe!' });
         };
-        const response = await Task.find({ user: user_id }).populate('user');
+        const response = await Task.find({ user: user_id });
 
         return res.status(200).json(response);
     },
@@ -32,13 +32,13 @@ module.exports = {
         const { name, description } = req.body;
 
         if (!task_id || !user_id) {
-            return res.status(404).json({ message: 'Usuário não está logado ou Tarefa não existe!' });
+            return res.json({ message: 'Usuário não está logado ou Tarefa não existe!' });
         }
 
         const aux = await Task.findById({ _id:task_id });
        
         if (!aux || (aux.user.toString() !== user_id.toString()) ) {
-            return res.status(400).json({ message: 'Usuário não é proprietario desta tarefa!' })
+            return res.json({ message: 'Usuário não é proprietario desta tarefa!' })
         }
         if(!name){
             await Task.findByIdAndUpdate({ _id:task_id }, { description });
@@ -60,13 +60,13 @@ module.exports = {
         const { task_id, user_id } = req.headers;
         
         if (!task_id || !user_id) {
-            return res.status(404).json({ message: 'Usuário não está logado ou Tarefa não existe!' });
+            return res.json({ message: 'Usuário não está logado ou a tarefa não existe' });
         }
         
         const aux = await Task.findById({ _id:task_id });
         
         if (aux.user.toString() !== user_id.toString()) {
-            return res.status(400).json({ message: 'Usuário não é proprietario desta tarefa!' });
+            return res.json({ message: 'Usuário não é proprietario desta tarefa!' });
         }
         await Task.findByIdAndDelete({ _id: task_id });
         return res.status(200).json({ message: 'Tarefa exluída com sucesso!' });
